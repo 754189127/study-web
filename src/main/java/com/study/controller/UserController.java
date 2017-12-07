@@ -20,7 +20,6 @@ public class UserController {
 	private static Logger logger=LoggerFactory.getLogger(UserController.class);
 	@Autowired
 	UserService userService;
-
 	@RequestMapping(value = "/userinfo/{id}", method = RequestMethod.GET)
 	public ModelAndView showUserInfo(@PathVariable Long id) {
 		ModelAndView mav = new ModelAndView("info");
@@ -28,7 +27,7 @@ public class UserController {
 		if (user != null) {
 			mav.addObject("name", user.getRealName());
 		} else {
-			mav.addObject("name", "查无此用户");
+			mav.addObject("name", "鏌ユ棤姝ょ敤鎴�");
 		}
 		logger.debug("============userinfo debug");
 		logger.info("=======userinfo info");
@@ -54,5 +53,12 @@ public class UserController {
 		logger.info("=======list info");
 		logger.error("===========list error");
 		return mav;
+	}
+	
+	public static void main(String[] args) {
+		
+		//当前cpu核心个数
+		int a = Runtime.getRuntime().availableProcessors();
+		System.out.println(a);
 	}
 }
