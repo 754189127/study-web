@@ -68,8 +68,8 @@ public class CacheCrashTest {
 				e.printStackTrace();
 			}
 //			System.out.println(Thread.currentThread().getName()+"==============>"+ods.getOrderAmount(UUID.randomUUID().toString()));
-			BigDecimal orderAmount = ods.getOrderAmount(USER_CODE);
-			System.out.println(Thread.currentThread().getName()+"==============>"+orderAmount);
+			//BigDecimal orderAmount = ods.getOrderAmount(USER_CODE);
+			//System.out.println(Thread.currentThread().getName()+"==============>"+orderAmount);
 		}
 		
 	}
