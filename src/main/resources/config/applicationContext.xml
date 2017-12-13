@@ -38,7 +38,42 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<property name="acquireIncrement" value="3"></property>
 	</bean>
  -->
-	
+	<!-- druid数据连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<!-- 基本属性 url、user、password -->
+		<property name="driverClassName" value="${db.driver}" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="10000" />
+
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="20" />
+		<!-- 配置监控统计拦截的filters -->
+		<property name="filters" value="stat" />
+	</bean>
+
 
 	<!-- 配置事务管理器 -->
 	<bean id="transactionManager"
@@ -46,13 +81,35 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 		<!-- 数据源 -->
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	
+	<!-- 通知 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!-- 传播行为 -->
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="create*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="find*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="select*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="get*" propagation="SUPPORTS" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
 
 
 	<!-- 使用注解来控制事物 -->
 	<tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
 
-
+	<!-- 配置sqlsessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!--dataSource属性指定要用到的连接池 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<!--configLocation属性指定mybatis的核心配置文件 -->
+		<property name="configLocation" value="classpath:mybatis/config.xml"></property>
+		<!-- 所有配置的mapper文件 -->
+		<property name="mapperLocations" value="classpath*:mapper/*.xml"></property>
+	</bean>
 
 	<!-- 扫描生成所有dao层对象 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
@@ -69,13 +126,15 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 	<bean id="jedisConnectionFactory"
 		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
 		destroy-method="destroy">
-		<property name="hostName" value="127.0.0.1" />
-		<property name="port" value="6379" />
-		<property name="database" value="0" />
-		<property name="timeout" value="3000" />
-		<property name="usePool" value="true" />
-		<property name="poolConfig" ref="jedisPoolConfig" />
+		<property name="hostName" value="${redis.host}" />
+		<property name="port" value="${redis.port}" />
+		<property name="password" value="${redis.pass}" />
+		<property name="timeout" value="${redis.timeout}" />
+		<property name="database" value="${redis.default.db}" />
+		<constructor-arg index="0" ref="jedisPoolConfig" />
 	</bean>
+	
+	
 	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
 		<property name="connectionFactory" ref="jedisConnectionFactory" />
 		<property name="keySerializer">
