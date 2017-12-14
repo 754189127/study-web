@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
-	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:cache="http://www.springframework.org/schema/cache"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
-http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd  
-http://www.springframework.org/schema/cache
-                        http://www.springframework.org/schema/cache/spring-cache.xsd
-http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
-http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd  
-http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+<!-- ************** spring的配置文件，包括网站跳转逻辑的判断、控制*********** -->
 
 	<!-- 扫描业务层 组件 -->
 	<context:component-scan base-package="com.study.service"></context:component-scan>
+
 
 	<!-- 引入jdbc配置文件 -->
 	<bean id="propertyConfigurer"
@@ -25,80 +32,82 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
 			</list>
 		</property>
 	</bean>
-
-	<!-- c3p0数据连接池 -->
-	<!-- <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
-		<property name="driverClass" value="${db.driver}"></property>
-		<property name="jdbcUrl" value="${db.url}" />
-		<property name="user" value="${db.username}" />
+	
+	<!-- druid数据连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+		<!-- 基本属性 url、user、password -->
+		<property name="driverClassName" value="${db.driver}" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.username}" />
 		<property name="password" value="${db.password}" />
-		<property name="minPoolSize" value="1"></property>
-		<property name="maxPoolSize" value="5"></property>
-		<property name="initialPoolSize" value="3"></property>
-		<property name="acquireIncrement" value="3"></property>
-	</bean>
- -->
-	
 
-	<!-- 配置事务管理器 -->
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<!-- 数据源 -->
-		<property name="dataSource" ref="dataSource" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="1" />
+		<property name="minIdle" value="1" />
+		<property name="maxActive" value="10000" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
 	</bean>
 	
-
-
-	<!-- 使用注解来控制事物 -->
-	<tx:annotation-driven transaction-manager="transactionManager"></tx:annotation-driven>
-
-
-
-	<!-- 扫描生成所有dao层对象 -->
+	
+	<!-- mybatis整合，配置sqlsessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!--dataSource属性指定要用到的连接池 -->
+		<property name="dataSource" ref="dataSource"></property>
+		<!--configLocation属性指定mybatis的核心配置文件 -->
+		<property name="configLocation" value="classpath:config/mybatis-config.xml"></property>
+		<!-- 所有配置的mapper文件 -->
+		<property name="mapperLocations" value="classpath*:mapper/*.xml"></property>
+	</bean>
+	
+	
+	
+	<!-- 配置扫描器，扫描生成所有dao层对象，将mybatis的接口实现加入到IOC容器中 -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.study.dao" />
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
 	</bean>
 
-	<!-- redis 缓存 -->
-	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-		<property name="maxTotal" value="10000" />
-		<property name="maxIdle" value="10" />
-	</bean>
 
-	<bean id="jedisConnectionFactory"
-		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
-		destroy-method="destroy">
-		<property name="hostName" value="127.0.0.1" />
-		<property name="port" value="6379" />
-		<property name="database" value="0" />
-		<property name="timeout" value="3000" />
-		<property name="usePool" value="true" />
-		<property name="poolConfig" ref="jedisPoolConfig" />
+	<!-- 配置事务管理器  -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
 	</bean>
-	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
-		<property name="connectionFactory" ref="jedisConnectionFactory" />
-		<property name="keySerializer">
-			<bean
-				class="org.springframework.data.redis.serializer.StringRedisSerializer" />
-		</property>
-		<property name="valueSerializer">
-			<bean
-				class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
-		</property>
-		<property name="enableTransactionSupport" value="false"></property>
-	</bean>
-	<cache:annotation-driven />
-	<!-- declare Redis Cache Manager -->
-	<bean id="cacheManager" class="org.springframework.data.redis.cache.RedisCacheManager">
-		<constructor-arg index="0" ref="redisTemplate"></constructor-arg>
-		<property name="expires">
-			<map>
-				<entry key="amount" value="100"></entry>
-				<entry key="amount_backup" value="100"></entry>
-			</map>
-		</property>
-	</bean>
+	
+	<!-- 开启基于注解的事物，使用XML配置形式的事物（必要的主要的都是使用配置形式） -->
+	<aop:config>
+		<!-- 切入点表达式 -->
+		<aop:pointcut expression="execution(*  com.study.service..*(..))" id=txPoint"/>
+		<!--  -->
+		<aop:advisor advice-ref="txAdvice" ointcut-ref="txPoint"/>
+	</aop:config>
+	
+	<!-- 配置事物增强，事物如何切入 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!-- 所有方法都是事物方法 -->
+			<tx:method name="*"/>
+			<!-- 已save,insert,add,create,delete,update等开始的方法 -->
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="create*" propagation="REQUIRED" />
+			<tx:method name="delete*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="find*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="select*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="get*" propagation="SUPPORTS" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
 
+	<!-- spring 配置核心点（数据源、与mybatis整合、事物控制） -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+	
 
 </beans>

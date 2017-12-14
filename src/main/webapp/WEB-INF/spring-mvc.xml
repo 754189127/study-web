@@ -8,8 +8,13 @@ http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/context 
 http://www.springframework.org/schema/context/spring-context-3.1.xsd">
-	<!-- 开启mvc的注解驱动 -->
-	<mvc:annotation-driven/>
+	
+	<!-- springmvc的配置文件，包括网站跳转逻辑的判断、控制 -->
+
+	
+	<!-- 自动扫描包下的所有类，使其认为spring mvc的控制器 -->
+	<context:component-scan base-package="com.study.controller"></context:component-scan>
+	
 	<!-- 视图解析器 -->
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<!-- 重定向时是否添加上下文 -->
@@ -17,8 +22,13 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 		<property name="prefix" value="/WEB-INF/views/"></property>
 		<property name="suffix" value=".jsp"></property>
 	</bean>
-	<!-- 自动扫描包下的所有类，使其认为spring mvc的控制器 -->
-	<context:component-scan base-package="com.study.controller"></context:component-scan>
 	
-	<import resource="classpath:config/beans.xml"/>
+	
+	<!-- 两个标准配置 -->
+	<!-- 将springmvc不能处理的请求交给tomcat -->
+	<mvc:default-servlet-handler/>
+	<!-- 开启mvc的注解驱动 能支持springmvc更高级的一些功能，JSR303校验，快捷的ajax -->
+	<mvc:annotation-driven/>
+		
+	<!-- <import resource="classpath:config/beans.xml"/> -->
 </beans>
