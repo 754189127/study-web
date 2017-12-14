@@ -13,6 +13,4 @@ public interface UserService {
 	public int getUserCount();
 
 	public List<User> findAll();
-
-	public User insert(User user);
 }

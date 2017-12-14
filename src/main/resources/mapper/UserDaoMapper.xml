@@ -10,10 +10,7 @@
         <result property="realName" column="real_name"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
-    <insert id="insert" parameterType="com.study.entity.User" useGeneratedKeys="true" keyProperty="id">
-	  insert into s_user(account, password,realName,createTime) values(#{account}, #{password}, #{realName}, #{createTime})
-	</insert
-	
+    
 	<select id="getByAccount" resultMap="userMap">
 		select * from s_user where account=#{account}
 	</select>

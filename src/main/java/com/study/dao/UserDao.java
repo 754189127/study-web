@@ -12,6 +12,4 @@ public interface UserDao {
 	public int getUserCount();
 
 	public List<User> findAll();
-
-	public User insert(User user);
 }
