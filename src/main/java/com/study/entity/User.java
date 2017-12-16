@@ -3,43 +3,55 @@ package com.study.entity;
 import java.util.Date;
 
 public class User {
-    private Integer userId;
+	private Integer userId;
 
-    private String account;
+	private String account;
 
-    private String password;
+	private String password;
 
-    private Date loginTime;
+	private Date loginTime;
 
-    public Integer getUserId() {
-        return userId;
-    }
+	public User() {
+		super();
+	}
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
+	public User(Integer userId, String account, String password, Date loginTime) {
+		super();
+		this.userId = userId;
+		this.account = account;
+		this.password = password;
+		this.loginTime = loginTime;
+	}
 
-    public String getAccount() {
-        return account;
-    }
+	public Integer getUserId() {
+		return userId;
+	}
 
-    public void setAccount(String account) {
-        this.account = account == null ? null : account.trim();
-    }
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getAccount() {
+		return account;
+	}
 
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
-    }
+	public void setAccount(String account) {
+		this.account = account == null ? null : account.trim();
+	}
 
-    public Date getLoginTime() {
-        return loginTime;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setLoginTime(Date loginTime) {
-        this.loginTime = loginTime;
-    }
+	public void setPassword(String password) {
+		this.password = password == null ? null : password.trim();
+	}
+
+	public Date getLoginTime() {
+		return loginTime;
+	}
+
+	public void setLoginTime(Date loginTime) {
+		this.loginTime = loginTime;
+	}
 }
