@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<<<<<<< HEAD
 <!DOCTYPE configuration
   PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
@@ -8,32 +7,8 @@
 		<setting name="mapUnderscoreToCamelCase" value="true" />
 	</settings>
 	
-	
-=======
-<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
-<configuration>
-	<properties>
-		<property name="dialect" value="mysql" />
-	</properties>
-	<!-- 参数设置 -->
-	<settings>
-		<!-- setting name="cacheEnable" value="true"/-->
-        <setting name="useGeneratedKeys" value="false"/>
-        <!--增加mybatis日志-->
-		<setting name="logImpl" value="LOG4J" />
-	</settings>
-	
->>>>>>> 140a3353a73a6bfb937b59a7d03b26c2f944c2c2
 	<!-- 别名定义 -->
 	<typeAliases>
 		<typeAlias alias="User" type="com.study.entity.User" />
 	</typeAliases>
-
-<<<<<<< HEAD
-=======
-
- 	<mappers>
-        <!--<mapper resource="com/mappers/userMapper.xml" />-->
-    </mappers>
->>>>>>> 140a3353a73a6bfb937b59a7d03b26c2f944c2c2
 </configuration>
