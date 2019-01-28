@@ -6,13 +6,13 @@
 <generatorConfiguration>
   <context id="DB2Tables" targetRuntime="MyBatis3">
   <commentGenerator>
-  <property name="suppressAllComments" value="true" />
+    <property name="suppressAllComments" value="true" />
 </commentGenerator>
   <!-- 数据库连接 -->
     <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-        connectionURL="jdbc:mysql://localhost:3306/db_study"
+        connectionURL="jdbc:mysql://192.168.18.203:3306/db_study?useSSL=false"
         userId="root"
-        password="root">
+        password="123456">
     </jdbcConnection>
 
     <javaTypeResolver >
