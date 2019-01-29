@@ -16,6 +16,21 @@
       <context id="DB2Tables" targetRuntime="MyBatis3Simple" defaultModelType="flat">
       <!-- 生成的Java文件的编码 -->
       <property name="javaFileEncoding" value="UTF-8"/>
+          <!--
+            caseSensitive 是否区分大小写，默认值 false。如果数据库区分大小写，这里就需要配置为 true，这样当表名为 USER 时，会生成 @Table(name = "USER") 注解，否则使用小写 user 时会找不到表。
+            forceAnnotation 是否强制生成注解，默认 false，如果设置为 true，不管数据库名和字段名是否一致，都会生成注解（包含 @Table 和 @Column）。
+            beginningDelimiter 和 endingDelimiter 开始和结束分隔符，对于有关键字的情况下适用。
+            useMapperCommentGenerator 是否使用通用 Mapper 提供的注释工具，默认 true 使用，这样在生成代码时会包含字段的注释（目前只有 mysql 和 oracle 支持），设置 false 后会用默认的，或者你可以配置自己的注释插件。
+            generateColumnConsts 在生成的 model中，增加字段名的常量，便于使用 Example 拼接查询条件的时候使用。
+            lombok 增加 model 代码生成时，可以直接生成 lombok 的 @Getter@Setter@ToString@Accessors(chain = true) 四类注解， 使用者在插件配置项中增加 <property name="lombok" value="Getter,Setter,ToString,Accessors"/> 即可生成对应包含注解的 model 类。
+          -->
+      <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+          <property name="mappers" value="com.study.uitls.MyMapper"/>
+          <property name="caseSensitive" value="true"/>
+          <property name="forceAnnotation" value="true"/>
+          <property name="beginningDelimiter" value="`"/>
+          <property name="endingDelimiter" value="`"/>
+      </plugin>
       <commentGenerator>
           <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
           <property name="suppressAllComments" value="true" />
@@ -68,10 +83,10 @@
     
     
     <!-- table指定每个表生成策略 -->
-	<!--
+
         <table tableName="s_user" domainObjectName="User"></table>
         <table tableName="s_user_info" domainObjectName="UserInfo"></table>
-     -->
+
 
 
     <table schema="DB2ADMIN" tableName="ALLTYPES" domainObjectName="Customer" >

@@ -1,4 +1,4 @@
-package com.study;
+package com.study.uitls;
 
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
