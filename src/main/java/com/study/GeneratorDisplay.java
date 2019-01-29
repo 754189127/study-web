@@ -1,4 +1,4 @@
-package com.study.test;
+package com.study;
 
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
@@ -9,11 +9,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MBGTest {
+public class GeneratorDisplay {
 	public static void main(String[] args) throws Exception {
 		List<String> warnings = new ArrayList<String>();
 		boolean overwrite = true;
-		File configFile = new File("mbg.xml");
+		File configFile = new File("generatorConfig.xml");
 		ConfigurationParser cp = new ConfigurationParser(warnings);
 		Configuration config = cp.parseConfiguration(configFile);
 		DefaultShellCallback callback = new DefaultShellCallback(overwrite);
