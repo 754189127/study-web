@@ -16,6 +16,12 @@ spring:
             max-wait: 60000
             max-active: 20
             test-on-borrow: true
+    mail:
+      host: smtp.qq.com
+      username: 754189127@qq.com
+      password: jsspsntiofxvbbdd
+      default-encoding: utf-8
+      port: 587
 
 
 
