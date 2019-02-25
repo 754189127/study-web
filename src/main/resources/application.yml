@@ -1,6 +1,6 @@
 #端口号
 server:
-    port: 8080
+    port: 8070
 
 #数据库链接设置
 spring:
@@ -22,6 +22,15 @@ spring:
       password: jsspsntiofxvbbdd
       default-encoding: utf-8
       port: 587
+    rabbitmq:
+      host: 192.168.18.203
+      port: 5672
+      username: rabbitmq_dev
+      password: 123456
+    application:
+      name: spirng-boot-demo
+
+
 
 
 
